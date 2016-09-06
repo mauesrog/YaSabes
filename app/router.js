@@ -12,7 +12,7 @@ import { requireSignin, requireAuth } from './services/passport';
 const router = Router();
 
 router.get('/', (req, res) => {
-  res.json({ message: 'welcome to the ya sabes? api!' });
+  res.json({ message: 'welcome to the ya sabes? api bitch!' });
 });
 
 router.route('/signin')
