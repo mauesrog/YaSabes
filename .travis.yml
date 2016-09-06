@@ -1,3 +1,8 @@
- language: node_js
- node_js:
-   - "5.4"
+language: node_js
+node_js:
+  - "5.4"
+deploy:
+  provider: heroku
+  app: yasabes
+  api_key:
+    secure: 5ed8adb7-bdeb-4390-8ee3-e67e2d8cdb99
