@@ -24,17 +24,6 @@ const UserSchema = new Schema({
     type: String,
     default: '',
   },
-  firstName: String,
-  secondName: {
-    type: String,
-    default: '',
-  },
-  lastName: String,
-  age: {
-    type: Number,
-    min: 18,
-    max: 100,
-  },
   matches: [{
     type: [Schema.Types.ObjectId],
     ref: 'Match',
@@ -65,47 +54,8 @@ UserSchema.pre('save', function encryptPassword(next) {
           try {
             if (err) { return next(err); }
 
-            const firstNames = user.firstName.split(' ');
-            const lastNames = user.firstName.split(' ');
-
-            let firstNamesString = '';
-            let lastNamesString = '';
-
-            for (let i = 0; i < firstNames.length; i++) {
-              firstNamesString += firstNames[i].charAt(0).toUpperCase() + firstNames[i].slice(1);
-
-              if (i < firstNames.length - 1) {
-                firstNamesString += ' ';
-              }
-            }
-
-            for (let i = 0; i < lastNames.length; i++) {
-              lastNamesString += lastNames[i].charAt(0).toUpperCase() + lastNames[i].slice(1);
-
-              if (i < lastNames.length - 1) {
-                lastNamesString += ' ';
-              }
-            }
-
-            if (typeof user.secondName !== 'undefined') {
-              const secondNames = user.firstName.split(' ');
-              let secondNamesString = '';
-
-              for (let i = 0; i < secondNames.length; i++) {
-                secondNamesString += secondNames[i].charAt(0).toUpperCase() + secondNames[i].slice(1);
-
-                if (i < secondNames.length - 1) {
-                  secondNamesString += ' ';
-                }
-              }
-
-              user.secondName = secondNamesString;
-            }
-
             // overwrite plain text password with encrypted password
             user.password = hash;
-            user.firstName = firstNamesString;
-            user.lastName = lastNamesString;
             return next();
           } catch (err) {
             next(err);
