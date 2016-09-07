@@ -67,7 +67,7 @@ UserSchema.pre('save', function encryptPassword(next) {
             if (err) { return next(err); }
 
             const firstNames = user.firstName.split(' ');
-            const lastNames = user.lastNames.split(' ');
+            const lastNames = user.lastName.split(' ');
 
             let firstNamesString = '';
             let lastNamesString = '';
