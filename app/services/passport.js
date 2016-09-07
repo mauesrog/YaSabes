@@ -19,10 +19,12 @@ const jwtOptions = {
 };
 
 // username + password authentication strategy
-const localLogin = new LocalStrategy(localOptions, (username, password, done) => {
+const localLogin = new LocalStrategy(localOptions, (usernamePrev, password, done) => {
   // Verify this username and password, call done with the user
   // if it is the correct username and password
   // otherwise, call done with false
+  const username = usernamePrev.toLowerCase();
+
   User.findOne({ username }, (err, user) => {
     if (err) { return done(err); }
 

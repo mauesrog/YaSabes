@@ -10,18 +10,26 @@ export const signup = (req, res) => {
     const conversationInitialRef = new ConversationRef();
 
     if (typeof req.body.email === 'undefined' || typeof req.body.password === 'undefined' ||
-      typeof req.body.username === 'undefined') {
+      typeof req.body.username === 'undefined' || typeof req.body.firstName === 'undefined' ||
+      typeof req.body.lastName === 'undefined' || typeof req.body.age === 'undefined') {
       console.log('not all fields present');
       res.json({
-        error: 'ERR: Users need \'email\', \'password\', and  \'username\' fields',
+        error: 'ERR: Users need \'email\', \'password\', \'username\', \'firstName\', \'lastName\', and \'age\' fields',
       });
     } else {
       user.email = req.body.email;
       user.password = req.body.password;
       user.username = req.body.username;
+      user.firstName = req.body.firstName;
+      user.lastName = req.body.lastName;
+      user.age = req.body.age;
 
-      if (typeof req.body.bio !== 'undefined') {
+      if (typeof req.body.bio !== 'undefined' && req.body.bio.length > 0) {
         user.bio = req.body.bio;
+      }
+
+      if (typeof req.body.secondName !== 'undefined' && req.body.secondName.length > 0) {
+        user.secondName = req.body.secondName;
       }
 
       conversationInitialRef.userId = user._id;
