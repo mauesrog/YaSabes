@@ -87,6 +87,7 @@ export const signin = (req, res) => {
     .then(user => {
       res.json({
         user,
+        message: `User ${user._id}, ${user.username} successfully logged in`,
         token: tokenForUser(req.user),
       });
     })
