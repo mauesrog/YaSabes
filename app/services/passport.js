@@ -23,19 +23,19 @@ const localLogin = new LocalStrategy(localOptions, (username, password, done) =>
   // Verify this username and password, call done with the user
   // if it is the correct username and password
   // otherwise, call done with false
-  User.findOne({ username }, (err, renter) => {
+  User.findOne({ username }, (err, user) => {
     if (err) { return done(err); }
 
-    if (!renter) { return done(null, false); }
+    if (!user) { return done(null, false); }
 
     // compare passwords - is `password` equal to user.password?
-    User.comparePassword(password, (err, isMatch) => {
+    user.comparePassword(password, (err, isMatch) => {
       if (err) {
         done(err);
       } else if (!isMatch) {
         done(null, false);
       } else {
-        done(null, renter);
+        done(null, user);
       }
     });
   });
@@ -46,11 +46,11 @@ const jwtLogin = new JwtStrategy(jwtOptions, (payload, done) => {
   // See if the user ID in the payload exists in our database
   // If it does, call 'done' with that other
   // otherwise, call done without a user object
-  User.findById(payload.sub, (err, renter) => {
+  User.findById(payload.sub, (err, user) => {
     if (err) {
       done(err, false);
-    } else if (renter) {
-      done(null, renter);
+    } else if (user) {
+      done(null, user);
     } else {
       done(null, false);
     }
