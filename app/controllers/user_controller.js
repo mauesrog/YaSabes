@@ -35,6 +35,38 @@ export const signup = (req, res) => {
           conversationHead.next = [];
           conversationHead.next.push(convoRef._id);
           conversationHead.prev = conversationHead.next;
+
+          conversationHead.save()
+          .then(resultConvo => {
+            try {
+              user.conversations = resultConvo._id;
+
+              user.save()
+              .then(result => {
+                try {
+                  res.json({
+                    user: result,
+                    token: tokenForUser(result),
+                    message: `User created with \'id\' ${result._id}!`,
+                  });
+                } catch (err) {
+                  console.log(`res json error: ${err}`);
+                  res.json({ error: `${err}` });
+                }
+              })
+              .catch(error => {
+                console.log(`user save error: ${error}`);
+                res.json({ error: `${error}` });
+              });
+            } catch (err) {
+              console.log(`general error level 2: ${err}`);
+              res.json({ error: `${err}` });
+            }
+          })
+          .catch(error => {
+            console.log(`conversation save error: ${error}`);
+            res.json({ error: `${error}` });
+          });
         } catch (err) {
           res.json({ error: `${err}` });
         }
@@ -55,6 +87,7 @@ export const signin = (req, res) => {
     .then(user => {
       res.json({
         user,
+        message: `User ${user._id}, ${user.username} successfully logged in`,
         token: tokenForUser(req.user),
       });
     })
