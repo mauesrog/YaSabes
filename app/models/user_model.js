@@ -18,6 +18,7 @@ const UserSchema = new Schema({
   username: {
     type: String,
     unique: true,
+    lowercase: true,
     validate: [validateUsername, 'Invalid username'],
   },
   bio: {
