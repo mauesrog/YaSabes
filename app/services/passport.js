@@ -8,7 +8,7 @@ import User from '../models/user_model';
 
 // options for local strategy, we'll use username AS the username
 // not have separate ones
-const localOptions = { usernameField: 'username' };
+const localOptions = { usernameField: 'username', passwordField: 'password' };
 
 // options for jwt strategy
 // we'll pass in the jwt in an `authorization` header
