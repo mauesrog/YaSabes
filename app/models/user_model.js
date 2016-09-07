@@ -67,7 +67,7 @@ UserSchema.pre('save', function encryptPassword(next) {
             if (err) { return next(err); }
 
             const firstNames = user.firstName.split(' ');
-            const lastNames = user.firstName.split(' ');
+            const lastNames = user.lastNames.split(' ');
 
             let firstNamesString = '';
             let lastNamesString = '';
@@ -89,7 +89,7 @@ UserSchema.pre('save', function encryptPassword(next) {
             }
 
             if (typeof user.secondName !== 'undefined') {
-              const secondNames = user.firstName.split(' ');
+              const secondNames = user.secondName.split(' ');
               let secondNamesString = '';
 
               for (let i = 0; i < secondNames.length; i++) {
