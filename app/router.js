@@ -21,7 +21,7 @@ router.route('/signin')
 router.route('/signup')
       .post(User.signup);
 
-router.route('/users/:id')
+router.route('/users')
       .put(requireAuth, User.updateUserData)
       .get(requireAuth, User.getUserData);
 
