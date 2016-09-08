@@ -5,12 +5,11 @@
   "author": "",
   "main": "app/server.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "test": "./node_modules/.bin/eslint **.js",
     "dev": "nodemon app/server.js --exec babel-node",
     "start": "babel-node app/server.js",
     "build": "babel app -d dist",
-    "prod": "npm run build; node dist/server.js",
-    "test": "./node_modules/.bin/eslint **.js"
+    "prod": "npm run build; node dist/server.js"
   },
   "license": "ISC",
   "dependencies": {
@@ -25,6 +24,7 @@
     "http": "0.0.0",
     "jwt-simple": "^0.5.0",
     "mongoose": "^4.6.0",
+    "multer": "^1.2.0",
     "passport": "^0.3.2",
     "passport-jwt": "^2.1.0",
     "passport-local": "^1.0.0",
