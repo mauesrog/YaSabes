@@ -110,6 +110,20 @@ export const signin = (req, res) => {
 
 export const getUserData = (req, res) => {
   try {
+    User.update({ _id: req.user._id }, req.body)
+    .then(updatedUser => {
+      try {
+        res.json({
+          message: `User data updated for user ${updatedUser._id}`,
+          user: updatedUser,
+        });
+      } catch (err) {
+        res.json({ error: `${err}` });
+      }
+    })
+    .catch(error => {
+      res.json({ error: `${error}` });
+    });
     res.json({ message: 'yes' });
   } catch (err) {
     res.json({ error: `${err}` });
