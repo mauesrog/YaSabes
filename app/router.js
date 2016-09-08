@@ -26,7 +26,7 @@ router.route('/users')
       .get(requireAuth, User.getUserData);
 
 router.route('/users/profilePicture')
-      .put(requireAuth, User.setProfilePicture);
+      .post(requireAuth, User.setProfilePicture);
 
 router.route('/conversations')
       .get(requireAuth, Conversation.getConversations)
