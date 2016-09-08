@@ -108,9 +108,8 @@ export const signin = (req, res) => {
   }
 };
 
-export const getUserData = (req, res) => {
+export const updateUserData = (req, res) => {
   try {
-    console.log(req.body);
     User.update({ _id: req.user._id }, req.body)
     .then(updatedUser => {
       try {
@@ -131,7 +130,7 @@ export const getUserData = (req, res) => {
   }
 };
 
-export const updateUserData = (req, res) => {
+export const getUserData = (req, res) => {
   try {
     res.json({ message: 'yes' });
   } catch (err) {
