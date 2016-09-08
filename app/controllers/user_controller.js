@@ -110,6 +110,7 @@ export const signin = (req, res) => {
 
 export const getUserData = (req, res) => {
   try {
+    console.log(req.body);
     User.update({ _id: req.user._id }, req.body)
     .then(updatedUser => {
       try {
