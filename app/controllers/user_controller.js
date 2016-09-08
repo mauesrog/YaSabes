@@ -182,7 +182,7 @@ export const setProfilePicture = (req, res) => {
           try {
             res.json({
               message: `Profile picture added for user ${req.user._id}`,
-              user: updatedUser,
+              profilePicture,
             });
           } catch (err) {
             res.json({ error: `${err}` });
