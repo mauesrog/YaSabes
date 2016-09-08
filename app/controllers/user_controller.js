@@ -3,6 +3,8 @@ import Conversation from '../models/conversation_model';
 import ConversationRef from '../models/conversation_ref_model';
 import { tokenForUser } from '../utils';
 import multer from 'multer';
+import fs from 'fs';
+
 const upload = multer({
   dest: 'uploads/',
   fileFilter: (req, file, cb) => {
@@ -122,7 +124,7 @@ export const updateUserData = (req, res) => {
     .then(updatedUser => {
       try {
         res.json({
-          message: `User data updated for user ${updatedUser._id}`,
+          message: `User data updated for user ${req.user._id}`,
           user: updatedUser,
         });
       } catch (err) {
@@ -146,16 +148,50 @@ export const getUserData = (req, res) => {
   }
 };
 
+export const getProfilePicture = (req, res) => {
+  try {
+    User.findById(req.user._id)
+    .then(userData => {
+      try {
+        res.json(userData.profilePicture);
+      } catch (err) {
+        res.json({ error: `${err}` });
+      }
+    })
+    .catch(error => {
+      res.json({ error: `${error}` });
+    });
+  } catch (err) {
+    res.json({ error: `${err}` });
+  }
+}
+
 export const setProfilePicture = (req, res) => {
   try {
-    upload(req, res, err => {
-      if (err) {
-        console.log(err);
-      }
-      console.log(req.body);
-      console.log(req.file);
+    upload(req, res, error => {
+      if (error) {
+        res.json({ error: `${error}` });
+      } else {
+        const profilePicture = {
+          data: fs.readFileSync(req.file.path),
+          contentType: 'image/png',
+        };
 
-      res.json({ message: 'yes' });
+        User.update({ _id: req.user._id }, { profilePicture })
+        .then(updatedUser => {
+          try {
+            res.json({
+              message: `Profile picture added for user ${req.user._id}`,
+              user: updatedUser,
+            });
+          } catch (err) {
+            res.json({ error: `${err}` });
+          }
+        })
+        .catch(error2 => {
+          res.json({ error: `${error2}` });
+        });
+      }
     });
   } catch (err) {
     res.json({ error: `${err}` });

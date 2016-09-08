@@ -36,6 +36,14 @@ const UserSchema = new Schema({
     min: 18,
     max: 100,
   },
+  profilePicture: {
+    data: Buffer,
+    contentType: String,
+    default: {
+      data: '',
+      contentType: '',
+    },
+  },
   matches: [{
     type: [Schema.Types.ObjectId],
     ref: 'Match',
