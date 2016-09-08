@@ -4,7 +4,7 @@ import cors from 'cors';
 import mongoose from 'mongoose';
 import socketio from 'socket.io';
 import http from 'http';
-import multer from 'multer';
+// import multer from 'multer';
 
 import apiRouter from './router';
 
@@ -28,7 +28,7 @@ app.use(bodyParser.json());
 // REGISTER OUR ROUTES -------------------------------
 // all of our routes will be prefixed with /api
 app.use('/api', apiRouter);
-app.use(multer({ dest: './uploads/' }).single('image'));
+// app.use(multer({ dest: './uploads/' }).single('image'));
 
 io.on('connection', (socket) => {
   try {
