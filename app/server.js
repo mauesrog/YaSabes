@@ -28,11 +28,10 @@ app.use(bodyParser.json());
 // REGISTER OUR ROUTES -------------------------------
 // all of our routes will be prefixed with /api
 app.use('/api', apiRouter);
-app.use(multer({ dest: './uploads/',
-  rename: (fieldname, filename) => {
-    return filename;
-  },
-}).array('photoToUpload'));
+app.use(multer({
+  dest: './uploads/',
+  limits: { fieldSize: '100mb' },
+}));
 
 io.on('connection', (socket) => {
   try {
