@@ -141,7 +141,7 @@ export const getUserData = (req, res) => {
 export const setProfilePicture = (req, res) => {
   try {
     console.log(req);
-    console.log(req.files);
+    console.log(req.body);
     res.json({ message: 'yes' });
   } catch (err) {
     res.json({ error: `${err}` });
