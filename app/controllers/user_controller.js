@@ -142,6 +142,7 @@ export const setProfilePicture = (req, res) => {
   try {
     console.log(req);
     console.log(req.body);
+    console.log(req.file);
     res.json({ message: 'yes' });
   } catch (err) {
     res.json({ error: `${err}` });
