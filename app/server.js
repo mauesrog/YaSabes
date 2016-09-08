@@ -32,7 +32,7 @@ app.use(multer({ dest: './uploads/',
   rename: (fieldname, filename) => {
     return filename;
   },
-}));
+}).array('photoToUpload'));
 
 io.on('connection', (socket) => {
   try {
