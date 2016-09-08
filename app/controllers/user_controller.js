@@ -2,6 +2,14 @@ import User from '../models/user_model';
 import Conversation from '../models/conversation_model';
 import ConversationRef from '../models/conversation_ref_model';
 import { tokenForUser } from '../utils';
+import multer from 'multer';
+const upload = multer({
+  dest: 'uploads/',
+  fileFilter: (req, file, cb) => {
+    console.log('file is', file);
+    cb(null, true);
+  },
+}).single('image');
 
 export const signup = (req, res) => {
   try {
@@ -140,10 +148,15 @@ export const getUserData = (req, res) => {
 
 export const setProfilePicture = (req, res) => {
   try {
-    console.log(req);
-    console.log(req.body);
-    console.log(req.file);
-    res.json({ message: 'yes' });
+    upload(req, res, err => {
+      if (err) {
+        console.log(err);
+      }
+      console.log(req.body);
+      console.log(req.file);
+
+      res.json({ message: 'yes' });
+    });
   } catch (err) {
     res.json({ error: `${err}` });
   }
