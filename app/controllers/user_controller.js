@@ -6,7 +6,9 @@ import { emailVerificationToken, tokenForUser, userFromVerificationToken } from 
 import multer from 'multer';
 import sendgrid from 'sendgrid';
 
-const sg = require('sendgrid')('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');
+import config from '../config';
+
+const sg = require('sendgrid')(config.sendgridSecret);
 
 import fs from 'fs';
 
@@ -226,9 +228,30 @@ export const checkVerificationToken = (req, res) => {
     } else {
       console.log(userFromVerificationToken(req.body.verificationToken));
       if (userFromVerificationToken(req.body.verificationToken) === req.user._id.toString()) {
-        res.json({
-          message: 'Account verified',
-          user: req.user,
+        User.update({ _id: req.user._id }, { verified: true })
+        .then(success => {
+          try {
+            console.log(success);
+            User.findById(req.user._id)
+            .then(user => {
+              try {
+                res.json({
+                  user,
+                  message: 'Account verified',
+                });
+              } catch (err) {
+                res.json({ error: `${err}` });
+              }
+            })
+            .catch(error => {
+              res.json({ error: `${error}` });
+            });
+          } catch (err) {
+            res.json({ error: `${err}` });
+          }
+        })
+        .catch(error => {
+          res.json({ error: `${error}` });
         });
       } else {
         res.json({ error: 'User ids don\'t match: invalid verification token' });

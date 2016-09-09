@@ -44,6 +44,10 @@ const UserSchema = new Schema({
       contentType: '',
     },
   },
+  verified: {
+    type: Boolean,
+    default: false,
+  },
   matches: [{
     type: [Schema.Types.ObjectId],
     ref: 'Match',
