@@ -1,9 +1,16 @@
 import User from '../models/user_model';
 import Conversation from '../models/conversation_model';
 import ConversationRef from '../models/conversation_ref_model';
-import { tokenForUser } from '../utils';
+import { emailVerificationToken, tokenForUser, userFromVerificationToken } from '../utils';
+
 import multer from 'multer';
+import sendgrid from 'sendgrid';
+
+const sg = require('sendgrid')('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');
+
 import fs from 'fs';
+
+const helper = sendgrid.mail;
 
 const upload = multer({
   dest: 'uploads/',
@@ -201,6 +208,62 @@ export const setProfilePicture = (req, res) => {
         .catch(error2 => {
           res.json({ error: `${error2}` });
         });
+      }
+    });
+  } catch (err) {
+    res.json({ error: `${err}` });
+  }
+};
+
+
+export const checkVerificationToken = (req, res) => {
+  try {
+    if (typeof req.body.verificationToken === 'undefined') {
+      console.log('not all fields present');
+      res.json({
+        error: 'Users need \'verificationToken\'field',
+      });
+    } else {
+      console.log(userFromVerificationToken(req.body.verificationToken));
+      if (userFromVerificationToken(req.body.verificationToken) === req.user._id.toString()) {
+        res.json({ message: 'Account verified' });
+      } else {
+        res.json({ error: 'User ids don\'t match: invalid verification token' });
+      }
+    }
+  } catch (err) {
+    res.json({ error: `${err}` });
+  }
+};
+
+export const sendVerificationToken = (req, res) => {
+  try {
+    const from_email = new helper.Email('mauricio.esquivel.rogel.18@dartmouth.edu');
+    const to_email = new helper.Email('maurirogel@yahoo.com.mx');
+    const subject = 'Verifica tu cuenta Ya Sabe';
+    const content = new helper.Content('text/plain', `Hola ${req.user.firstName},\n¡Bienvenido a Ya Sabes! Nos emociona mucho darte la bienvenida a esta hermosa comunidad. Por favor copia y pega este token en la app para verificar tu cuenta:\n\t${emailVerificationToken(req.user)}`);
+    const mail = new helper.Mail(from_email, subject, to_email, content);
+
+    const request = sg.emptyRequest({
+      method: 'POST',
+      path: '/v3/mail/send',
+      body: mail.toJSON(),
+    });
+
+    sg.API(request, (error, response) => {
+      try {
+        if (error) {
+          res.json({ error: `${error}` });
+        } else {
+          console.log('hahaha');
+          console.log(response.statusCode);
+          console.log(response.body);
+          console.log(response.headers);
+
+          res.json({ message: `Email verification sent to ${req.user.email} for user ${req.user._id} with token ${emailVerificationToken(req.user)}` });
+        }
+      } catch (err) {
+        res.json({ error: `${err}` });
       }
     });
   } catch (err) {
