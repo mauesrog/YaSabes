@@ -142,7 +142,17 @@ export const updateUserData = (req, res) => {
 
 export const getUserData = (req, res) => {
   try {
-    res.json({ message: 'yes' });
+    User.findById(req.user._id)
+    .then(user => {
+      try {
+        res.json({ user });
+      } catch (err) {
+        res.json({ error: `${err}` });
+      }
+    })
+    .catch(error => {
+      res.json({ error: `${error}` });
+    });
   } catch (err) {
     res.json({ error: `${err}` });
   }
@@ -164,7 +174,7 @@ export const getProfilePicture = (req, res) => {
   } catch (err) {
     res.json({ error: `${err}` });
   }
-}
+};
 
 export const setProfilePicture = (req, res) => {
   try {
