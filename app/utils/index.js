@@ -8,10 +8,26 @@ export const tokenForUser = user => {
   return jwt.encode({ sub, iat: timestamp }, config.secret);
 };
 
+export const emailVerificationToken = user => {
+  const timestamp = new Date().getTime();
+  const sub = user.id ? user.id : user._id;
+
+  return jwt.encode({ sub: `emailAuthForUser:${sub}`, iat: timestamp }, config.secret);
+};
+
 export const userFromToken = token => {
   try {
     return jwt.decode(token, config.secret);
   } catch (err) {
+    return null;
+  }
+};
+
+export const userFromVerificationToken = token => {
+  try {
+    return jwt.decode(token, config.secret).sub.replace('emailAuthForUser:', '');
+  } catch (err) {
+    console.log(err);
     return null;
   }
 };
