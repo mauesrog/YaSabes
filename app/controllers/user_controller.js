@@ -22,6 +22,41 @@ const upload = multer({
   },
 }).single('image');
 
+export const sendVerificationToken = (req, res) => {
+  try {
+    const from_email = new helper.Email('mauricio.esquivel.rogel.18@dartmouth.edu');
+    const to_email = new helper.Email(req.user.email);
+    const subject = 'Verifica tu cuenta Ya Sabe';
+    const content = new helper.Content('text/plain', `Hola ${req.user.firstName},\n¡Bienvenido a Ya Sabes! Nos emociona mucho darte la bienvenida a esta hermosa comunidad. Por favor copia y pega este token en la app para verificar tu cuenta:\n\t${emailVerificationToken(req.user)}`);
+    const mail = new helper.Mail(from_email, subject, to_email, content);
+
+    const request = sg.emptyRequest({
+      method: 'POST',
+      path: '/v3/mail/send',
+      body: mail.toJSON(),
+    });
+
+    sg.API(request, (error, response) => {
+      try {
+        if (error) {
+          res.json({ error: `${error}` });
+        } else {
+          console.log('hahaha');
+          console.log(response.statusCode);
+          console.log(response.body);
+          console.log(response.headers);
+
+          res.json({ message: `Email verification sent to ${req.user.email} for user ${req.user._id}` });
+        }
+      } catch (err) {
+        res.json({ error: `${err}` });
+      }
+    });
+  } catch (err) {
+    res.json({ error: `${err}` });
+  }
+};
+
 export const signup = (req, res) => {
   try {
     const user = new User();
@@ -71,11 +106,22 @@ export const signup = (req, res) => {
               user.save()
               .then(result => {
                 try {
-                  res.json({
-                    user: result,
-                    token: tokenForUser(result),
-                    message: `User created with \'id\' ${result._id}!`,
-                  });
+                  const fakeReq = { user: result };
+                  const fakeRes = {
+                    json: jsonData => {
+                      try {
+                        res.json(typeof jsonData.error === 'undefined' ? {
+                          user: result,
+                          token: tokenForUser(result),
+                          message: `User created with \'id\' ${result._id}!`,
+                        } : { error: jsonData.error });
+                      } catch (err) {
+                        res.json({ error: `${err}` });
+                      }
+                    },
+                  };
+
+                  sendVerificationToken(fakeReq, fakeRes);
                 } catch (err) {
                   console.log(`res json error: ${err}`);
                   res.json({ error: `${err}` });
@@ -257,41 +303,6 @@ export const checkVerificationToken = (req, res) => {
         res.json({ error: 'User ids don\'t match: invalid verification token' });
       }
     }
-  } catch (err) {
-    res.json({ error: `${err}` });
-  }
-};
-
-export const sendVerificationToken = (req, res) => {
-  try {
-    const from_email = new helper.Email('mauricio.esquivel.rogel.18@dartmouth.edu');
-    const to_email = new helper.Email('maurirogel@yahoo.com.mx');
-    const subject = 'Verifica tu cuenta Ya Sabe';
-    const content = new helper.Content('text/plain', `Hola ${req.user.firstName},\n¡Bienvenido a Ya Sabes! Nos emociona mucho darte la bienvenida a esta hermosa comunidad. Por favor copia y pega este token en la app para verificar tu cuenta:\n\t${emailVerificationToken(req.user)}`);
-    const mail = new helper.Mail(from_email, subject, to_email, content);
-
-    const request = sg.emptyRequest({
-      method: 'POST',
-      path: '/v3/mail/send',
-      body: mail.toJSON(),
-    });
-
-    sg.API(request, (error, response) => {
-      try {
-        if (error) {
-          res.json({ error: `${error}` });
-        } else {
-          console.log('hahaha');
-          console.log(response.statusCode);
-          console.log(response.body);
-          console.log(response.headers);
-
-          res.json({ message: `Email verification sent to ${req.user.email} for user ${req.user._id}` });
-        }
-      } catch (err) {
-        res.json({ error: `${err}` });
-      }
-    });
   } catch (err) {
     res.json({ error: `${err}` });
   }
