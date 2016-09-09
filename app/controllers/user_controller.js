@@ -226,7 +226,10 @@ export const checkVerificationToken = (req, res) => {
     } else {
       console.log(userFromVerificationToken(req.body.verificationToken));
       if (userFromVerificationToken(req.body.verificationToken) === req.user._id.toString()) {
-        res.json({ message: 'Account verified' });
+        res.json({
+          message: 'Account verified',
+          user: req.user,
+        });
       } else {
         res.json({ error: 'User ids don\'t match: invalid verification token' });
       }
@@ -260,7 +263,7 @@ export const sendVerificationToken = (req, res) => {
           console.log(response.body);
           console.log(response.headers);
 
-          res.json({ message: `Email verification sent to ${req.user.email} for user ${req.user._id} with token ${emailVerificationToken(req.user)}` });
+          res.json({ message: `Email verification sent to ${req.user.email} for user ${req.user._id}` });
         }
       } catch (err) {
         res.json({ error: `${err}` });
