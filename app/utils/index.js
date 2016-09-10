@@ -37,7 +37,8 @@ export const validateArrayLength = (val, limit) => {
 };
 
 export const validateEmail = v => {
-  const emailRegex = /^([a-zA-Z0-9_\-\.]+)@(ibero\.edu\.mx|dartmouth\.edu|up\.edu\.mx|centro\.edu\.mx|itesm\.mx|anahuac\.mx)$/;
+  // const emailRegex = /^([a-zA-Z0-9_\-\.]+)@(ibero\.edu\.mx|dartmouth\.edu|up\.edu\.mx|centro\.edu\.mx|itesm\.mx|anahuac\.mx)$/;
+  const emailRegex = /^([a-zA-Z0-9_\-\.]+)@(ibero\.edu\.mx|up\.edu\.mx|centro\.edu\.mx|itesm\.mx|anahuac\.mx)$/;
   return emailRegex.test(v);
 };
 
