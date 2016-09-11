@@ -195,6 +195,59 @@ export const updateUserData = (req, res) => {
   }
 };
 
+export const getProspeesAtDepth = (req, res) => {
+  try {
+    console.log(req.params);
+    if (typeof req.params.depth === 'undefined') {
+      console.log('not all fields present');
+      res.json({
+        error: 'Users need \'verificationToken\'field',
+      });
+    } else {
+      const depth = parseInt(req.params.depth, 10);
+      User.find({})
+      .then(users => {
+        try {
+          if (typeof users.length !== 'undefined' && users.length > 0) {
+            let prospees;
+            let newDepth = depth + 1;
+
+            if (users.length > 5) {
+              if (5 * depth >= users.length) {
+                prospees = users.slice(0, users.length < 5 ? users.length : 5);
+                newDepth = 1;
+              } else {
+                prospees = users.slice(5 * depth, users.length < 5 * depth + 5 ? users.length : 5 * depth + 5);
+                if (users.length < 5 * depth + 5) {
+                  newDepth = 0;
+                }
+              }
+            } else {
+              prospees = users.slice(0);
+              newDepth = 1;
+            }
+
+            res.json({
+              prospees,
+              newDepth,
+              message: `Sent ${prospees.length} users`,
+            });
+          } else {
+            res.json({ error: 'Internal server error: No users\' array' });
+          }
+        } catch (err) {
+          res.json({ error: `${err}` });
+        }
+      })
+      .catch(error => {
+        res.json({ error: `${error}` });
+      });
+    }
+  } catch (err) {
+    res.json({ error: `${err}` });
+  }
+};
+
 export const getUserData = (req, res) => {
   try {
     User.findById(req.user._id)
