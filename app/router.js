@@ -33,6 +33,9 @@ router.route('/users/profilePicture')
       .get(requireAuth, User.getProfilePicture)
       .post(requireAuth, User.setProfilePicture);
 
+router.route('/users/prospees/:depth')
+      .get(requireAuth, User.getProspeesAtDepth);
+
 router.route('/conversations')
       .get(requireAuth, Conversation.getConversations)
       .put(requireAuth, Conversation.createConversation);
